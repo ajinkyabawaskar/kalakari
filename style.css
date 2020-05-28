@@ -61,3 +61,7 @@
     display: inline-block;
     color: #000000;
 }
+
+#file-info {
+    color: #28a745 !important;
+}

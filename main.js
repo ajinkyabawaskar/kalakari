@@ -38,7 +38,6 @@
      var formData = new FormData();
      // add assoc key values, this will be posts values
      formData.append("file", this.file, this.getName());
-     formData.append("fileUpload", true);
      $.ajax({
          type: "POST",
          url: "api/setProduct.php",
@@ -50,8 +49,9 @@
              return myXhr;
          },
          success: function(data) {
-             console.log(data);
-             product_images = data.URL;
+             if (data.uploadResult) {
+                 product_images.push(data.URL);
+             }
          },
          error: function(error) {
              // handle error
@@ -81,6 +81,8 @@
 
 
  $(document).ready(function() {
+     product_images = [];
+     $("#file-info").hide();
      $("#product_color").change(function() {
          product_color = $(this).children("option:selected").val();
          console.log(product_color);
@@ -93,7 +95,6 @@
              type: "POST",
              url: "api/setProduct.php",
              data: {
-                 "fileUpload": false,
                  "product_price": $('input[name=product_price]').val(),
                  "product_desc": $('input[name=product_desc]').val(),
                  "product_avail": $('input[name=product_avail]').val(),
@@ -115,11 +116,30 @@
 
  //Change id to your id
  $("#product_image").on("change", function(e) {
-     var file = $(this)[0].files[0];
-     var upload = new Upload(file);
+     numberOfUploadedFiles = $(this)[0].files.length;
+     if (numberOfUploadedFiles < 4) {
+         $("#file-error").hide();
+         for (i = 0; i < numberOfUploadedFiles; i++) {
+             var file = $(this)[0].files[i];
+             var upload = new Upload(file);
+             // maby check size or type here with upload.getSize() and upload.getType()
 
-     // maby check size or type here with upload.getSize() and upload.getType()
-
-     // execute upload
-     upload.doUpload();
+             // execute upload
+             upload.doUpload();
+             $("#file-info").text((i + 1) + "/" + (numberOfUploadedFiles) + " uploaded!");
+             //  var textt = $("#file-info").text();
+             //  if (i == numberOfUploadedFiles - 1) {
+             //      $("#file-info").text(textt + ", " + upload.getName() + " uploaded!");
+             //  } else {
+             //      $("#file-info").text(textt + " " + upload.getName());
+             //  }
+             $("#file-info").show();
+             setTimeout(function() {
+                 $("#file-info").hide();
+             }, 5000);
+         }
+     } else {
+         $("#file-error").text("No more than 3 files are allowed!");
+         $("#file-error").show();
+     }
  });

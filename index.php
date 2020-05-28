@@ -44,40 +44,6 @@
                     </div>
 
                     <div class="row">
-
-                        <!-- <div class="col-md-8 mb-3">
-                            <label for="product_avail">Size Availability</label>
-                            <select class="custom-select d-block w-100" id="product_avail" name="product_avail" required="">
-                                <option value="In Stock">In Stock</option>
-                                <option value="Out of Stock">Out of Stock</option>
-                            </select> 
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <input type="radio" aria-label="Checkbox for following text input">
-                                    </div>
-                                </div>
-                                <input type="text" name="product_avail" id="product_avail" class="form-control" aria-label="Text input with checkbox">
-                            </div>
-                            <div class="invalid-feedback">
-                                Please provide a valid size.
-                            </div>
-                        </div> -->
-                        <!-- <div class="col-md-4 mb-3">
-                            <label for="product_size">Product Size</label>
-                            <select class="custom-select d-block w-100" id="product_size" name="product_size" required>
-                                <option value="">Choose...</option>
-                                <option value="XS">XS</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                            <div class="invalid-feedback">
-                                Please select a valid size.
-                            </div>
-                        </div> -->
-
                         <div class="col-md-4 mb-3">
                             <label for="product_avail2">Size Availability</label>
                             <div class="custom-control custom-radio">
@@ -113,40 +79,27 @@
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="product_image" name="product_image[]" multiple="multiple" required>
                                     <label class="custom-file-label" for="inputGroupFile01">Choose files</label>
-                                    <div class="invalid=feedback">
-                                        Error.
-                                    </div>
+                                </div>
+                                <div class="invalid-feedback" id="file-error">
+                                    Error.
+                                </div>
+                                <div class="invalid-feedback" id="file-info">
+                                    
                                 </div>
 
                             </div>
+                            <!-- <div id="progress-wrp">
+                                <div class="progress-bar"></div>
+                                <div class="status">0%</div>
+                            </div> -->
+
+
+                        </div>
+                        <div class="col-md-4">
 
                         </div>
                     </div>
-                    <!-- <div class="mb-3">
-                        <label for="email">Email <span class="text-muted">(Optional)</span></label>
-                        <input type="email" class="form-control" id="email" placeholder="you@example.com">
-                        <div class="invalid-feedback">
-                            Please enter a valid email address for shipping updates.
-                        </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
-                        <div class="invalid-feedback">
-                            Please enter your shipping address.
-                        </div>
-                    </div> 
-
-                    <div class="mb-3">
-                        <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                        <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-                    </div>
-                    <hr class="mb-4"> -->
-                    <div id="progress-wrp">
-                        <div class="progress-bar"></div>
-                        <div class="status">0%</div>
-                    </div>
                     <hr class="mb-5 mt-4">
 
                     <button class="btn btn-primary btn-lg btn-block" type="submit">Add Product to Inventory</button>

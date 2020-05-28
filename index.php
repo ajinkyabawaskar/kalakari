@@ -12,45 +12,7 @@
     <!-- Favicons -->
 
     <meta name="theme-color" content="#563d7c">
-
-
-    <style>
-        .file-error {
-            display: none;
-            width: 100%;
-            margin-top: 0.25rem;
-            font-size: 80%;
-            color: #dc3545;
-        }
-
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-
-        .container {
-            max-width: 960px;
-        }
-
-        .lh-condensed {
-            line-height: 1.25;
-        }
-
-        :root #content>#right>.dose>.dosesingle,
-        :root #content>#center>.dose>.dosesingle {
-            display: none !important;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="bg-light">
@@ -63,7 +25,7 @@
         <div class="row">
 
             <div class="col-md-12">
-                <form class="needs-validation" novalidate="">
+                <form class="needs-validation" method="POST" id="addProductForm" novalidate="" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="product_price">Product Price</label>
@@ -134,11 +96,11 @@
                             <label for="product_color">Colors Available</label>
                             <select class="custom-select d-block w-100" id="product_color" name="product_color" required>
                                 <option value="">Choose...</option>
-                                <option value="XS">Red</option>
-                                <option value="S">Green</option>
-                                <option value="M">Blue</option>
-                                <option value="L">Orange</option>
-                                <option value="XL">Black</option>
+                                <option value="Red">Red</option>
+                                <option value="Green">Green</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Orange">Orange</option>
+                                <option value="Black">Black</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select a valid color.
@@ -147,11 +109,9 @@
                         <div class="col-md-4 mb-3">
                             <label for="product_image">Upload Images</label>
                             <!-- <input type="text" class="form-control" id="zip" placeholder="" required=""> -->
-
-
                             <div class="input-group mb-3">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="product_image[]" multiple="multiple" required>
+                                    <input type="file" class="custom-file-input" id="product_image" name="product_image[]" multiple="multiple" required>
                                     <label class="custom-file-label" for="inputGroupFile01">Choose files</label>
                                     <div class="invalid=feedback">
                                         Error.
@@ -183,7 +143,10 @@
                         <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
                     </div>
                     <hr class="mb-4"> -->
-
+                    <div id="progress-wrp">
+                        <div class="progress-bar"></div>
+                        <div class="status">0%</div>
+                    </div>
                     <hr class="mb-5 mt-4">
 
                     <button class="btn btn-primary btn-lg btn-block" type="submit">Add Product to Inventory</button>
@@ -199,29 +162,8 @@
             </ul>
         </footer>
     </div>
-    <script>
-        // JavaScript for disabling form submissions if there are invalid fields
-        (function() {
-            'use strict'
-
-            window.addEventListener('load', function() {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.getElementsByClassName('needs-validation')
-
-                // Loop over them and prevent submission
-                Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-            }, false)
-        }())
-    </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 

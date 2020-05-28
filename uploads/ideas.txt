@@ -1,0 +1,15 @@
+texture - wavelength transfrom
+color moments - zarnac transform
+watershed method of segmentation
+canny method of
+previt method of segmentation
+
+
+preprocessing - 
+noise removal
+apply: sobel filter 
+apply: previt filter
+
+else:
+ 	canny segementation
+

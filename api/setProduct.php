@@ -51,7 +51,7 @@ function setProduct()
     $productPrice = db_quote($_POST['product_price']);
     $productAvail = db_quote($_POST['product_avail']);
     $productColor = ($_POST['product_color']);
-    $productDesc = db_quote($_POST['product_desc']);
+    $productDesc = ($_POST['product_desc']);
     $productImages = db_quote(json_encode($_POST['product_images']));
 
     $dataError = array();
@@ -67,6 +67,7 @@ function setProduct()
         array_push($dataError, "Incorrect input format: product_avail");
     }
 
+    // check product color
     $validator = '/^[a-zA-Z]{3}+[-]+[0-9]{3}+$/';
     if (!preg_match($validator, $productColor)) {
         array_push($dataError, "Incorrect input format: product_color");
@@ -74,6 +75,15 @@ function setProduct()
         $productColor = db_quote($productColor);
     }
 
+    // check product desc
+    if(strlen($productDesc)> 25 ) {
+        array_push($dataError, "Incorrect input format: product_desc");
+    } else {
+        $productDesc = db_quote($productDesc);
+    }
+
+    // TO-DO
+    // check if image is an URL
 
     if ($dataError == array()) {
         $setProductQuery = "INSERT INTO `inventory` (`product_id`, `product_price`, `product_desc`, `product_avail`, `product_colors`, `product_image`) VALUES (" . $productId . " , " . $productPrice . " , " . $productDesc . " , " . $productAvail . " , " . $productColor . " , " . $productImages . ")";

@@ -50,39 +50,13 @@ function setProduct()
     $productId = db_quote(randomProductId());
     $productPrice = db_quote($_POST['product_price']);
     $productAvail = db_quote($_POST['product_avail']);
-    $productColor = ($_POST['product_color']);
+    $productColor = db_quote($_POST['product_color']);
     $productDesc = db_quote($_POST['product_desc']);
     $productImages = db_quote(json_encode($_POST['product_images']));
 
-    $dataError = array();
-
-    // check product price
-    if ($productPrice < 100 && $productPrice > 10000) {
-        array_push($dataError, "Incorrect input format: product_price");
-    }
-
-    // check product availability
-    $validAvailability = array("'In Stock'", "'Out Of Stock'");
-    if (!in_array($productAvail, $validAvailability)) {
-        array_push($dataError, "Incorrect input format: product_avail");
-    }
-
-    $validator = '/^[a-zA-Z]{3}+[-]+[0-9]{3}+$/';
-    if (!preg_match($validator, $productColor)) {
-        array_push($dataError, "Incorrect input format: product_color");
-    } else {
-        $productColor = db_quote($productColor);
-    }
-
-
-    if ($dataError == array()) {
-        $setProductQuery = "INSERT INTO `inventory` (`product_id`, `product_price`, `product_desc`, `product_avail`, `product_colors`, `product_image`) VALUES (" . $productId . " , " . $productPrice . " , " . $productDesc . " , " . $productAvail . " , " . $productColor . " , " . $productImages . ")";
-        $ifProductSet = db_query($setProductQuery);
-        return compact("ifProductSet", "productId");
-    } else {
-        // header("HTTP/1.0 500 Internal Server Error");
-        return $dataError;
-    }
+    $setProductQuery = "INSERT INTO `inventory` (`product_id`, `product_price`, `product_desc`, `product_avail`, `product_colors`, `product_image`) VALUES (".$productId." , ".$productPrice." , ".$productDesc." , ".$productAvail." , ".$productColor." , ".$productImages.")";
+    $ifProductSet = db_query($setProductQuery);
+    return $ifProductSet;
 }
 
 function randomProductId()

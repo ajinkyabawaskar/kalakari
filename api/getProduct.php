@@ -26,6 +26,7 @@ function fetchProductBy($product_id)
     $validator = '/^[KS-]+[a-zA-Z]{4}+[-]+[0-9]{5}+[-]+[a-zA-Z]{2}+$/';
     if (preg_match($validator, $product_id)) {
         // proceed
+        // connect to db
         require '../sql/connection.php';
         $fetchProductQuery = "SELECT * FROM `inventory` WHERE `product_id` =".db_quote($product_id);
         $fetchedProduct = db_select($fetchProductQuery);

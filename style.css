@@ -65,3 +65,9 @@
 #file-info {
     color: #28a745 !important;
 }
+
+.remove {
+    font-size: 0.7rem;
+    vertical-align: center;
+    line-height: normal;
+}

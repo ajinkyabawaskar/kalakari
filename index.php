@@ -62,11 +62,11 @@
                             <label for="product_color">Colors Available</label>
                             <select class="custom-select d-block w-100" id="product_color" name="product_color" required>
                                 <option value="">Choose...</option>
-                                <option value="Red">Red</option>
-                                <option value="Green">Green</option>
-                                <option value="Blue">Blue</option>
-                                <option value="Orange">Orange</option>
-                                <option value="Black">Black</option>
+                                <option value="aaa-000">Red</option>
+                                <option value="bbb-000">Green</option>
+                                <option value="ccc-000">Blue</option>
+                                <option value="ddd-111">Orange</option>
+                                <option value="eee-111">Black</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select a valid color.
@@ -75,7 +75,7 @@
                         <div class="col-md-4 mb-3">
                             <label for="product_image">Upload Images</label>
                             <!-- <input type="text" class="form-control" id="zip" placeholder="" required=""> -->
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-2">
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="product_image" name="product_image[]" multiple="multiple" required>
                                     <label class="custom-file-label" for="inputGroupFile01">Choose files</label>
@@ -88,6 +88,8 @@
                                 </div>
 
                             </div>
+                            
+
                             <!-- <div id="progress-wrp">
                                 <div class="progress-bar"></div>
                                 <div class="status">0%</div>
@@ -95,7 +97,7 @@
 
 
                         </div>
-
+                        
                     </div>
                     <hr class="my-4 mb-5">
                     <div class="row">
@@ -105,6 +107,9 @@
                         </div>
                         <div class="col-md-4 alert alert-success text-center" id="alert_success" role="alert">
                             Product Added!
+                        </div>
+                        <div class="col-md-4 alert alert-danger text-center" id="alert_error" role="alert">
+                            Product Not Added!
                         </div>
                     </div>
                 </form>

@@ -36,7 +36,7 @@ function uploadFiles()
     $uploadfile = $uploaddir . basename($_FILES['file']['name']);
     if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
         $uploadResult = true;
-        $URL = $uploadfile;
+        $URL = $config['imageDownloadPath'].basename($_FILES['file']['name']);
     } else {
         $uploadResult = false;
         $URL = null;
@@ -48,7 +48,7 @@ function setProduct()
 {
     require '../sql/connection.php';
     $productId = db_quote(randomProductId());
-    $productPrice = db_quote($_POST['product_price']);
+    $productPrice = intval($_POST['product_price']);
     $productAvail = db_quote($_POST['product_avail']);
     $productColor = ($_POST['product_color']);
     $productDesc = ($_POST['product_desc']);
@@ -59,6 +59,8 @@ function setProduct()
     // check product price
     if ($productPrice < 100 && $productPrice > 10000) {
         array_push($dataError, "Incorrect input format: product_price");
+    } else {
+        $productPrice = db_quote($productPrice);
     }
 
     // check product availability

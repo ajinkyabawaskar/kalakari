@@ -106,24 +106,19 @@ $(document).ready(function() {
                 "product_images": product_images,
             },
             success: function(data) {
-                $("#alert_success").text("Product Added: " + data.productId);
-                $("#alert_success").show();
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.getElementsByClassName('needs-validation')
-
-                // Loop over them and prevent submission
-                Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        // if (form.checkValidity() === false) {
-                        //     event.preventDefault();
-                        //     event.stopPropagation();
-                        // }
-                        form.classList.remove('was-validated')
-                    }, false)
-                })
+                if (typeof data.productId !== "undefined") {
+                    $("#alert_success").text("Product Added: " + data.productId);
+                    $("#alert_error").hide();
+                    $("#alert_success").show();
+                } else {
+                    $("#alert_success").hide();
+                    $("#alert_error").text(data);
+                    $("#alert_error").show();
+                }
                 console.log(data);
             },
             error: function(error) {
+                $("#alert_success").hide();
                 $("#alert_error").show();
                 // handle error
                 console.log(error.responseText);

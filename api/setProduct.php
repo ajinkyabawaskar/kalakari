@@ -36,7 +36,7 @@ function uploadFiles()
     $uploadfile = $uploaddir . basename($_FILES['file']['name']);
     if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
         $uploadResult = true;
-        $URL = $config['imageDownloadPath'].basename($_FILES['file']['name']);
+        $URL = $uploadfile;
     } else {
         $uploadResult = false;
         $URL = null;

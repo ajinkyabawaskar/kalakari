@@ -2,8 +2,13 @@
 // API to work only on GET method, so unauthorising rest of the methods
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
-        $response_data = uploadFiles();
-        response($response_data);
+        if (isset($_FILES['file']['name'])) {
+            $response_data = uploadFiles();
+            response($response_data);
+        } else {
+            $response_data = setProduct();
+            response($response_data);
+        }
         break;
     default:
         header("HTTP/1.0 401 Unauthorized");
@@ -18,29 +23,107 @@ function response($response_data)
 
 function uploadFiles()
 {
-    
     $post = $_POST;
+    $errors = array();
+    $uploadedFiles = array();
+    $extension = array("jpeg", "jpg", "png", "gif");
+    $bytes = 1024;
+    $KB = 1024;
+    $totalBytes = 5 * $bytes * $KB;
     $config = parse_ini_file('../sql/db_config.ini');
     $uploaddir = $config['imageUploadPath'];
-    $fp = fopen('../results.json', 'w');
-    fwrite($fp, json_encode($post));
-    fclose($fp);
-    if (isset($_FILES['file']['name'])) {
-        $uploadfile = $uploaddir . basename($_FILES['file']['name']);
-        if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
-            $uploadResult = true;
-            $URL = $uploadfile;
-        } else {
-            $uploadResult = false;
-            $URL = null;
+
+    $uploadfile = $uploaddir . basename($_FILES['file']['name']);
+    if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
+        $uploadResult = true;
+        $URL = $uploadfile;
+    } else {
+        $uploadResult = false;
+        $URL = null;
+    }
+    return compact("uploadResult", "URL");
+}
+
+function uploadFiles2()
+{
+    $errors = array();
+    $uploadedFiles = array();
+    $extension = array("jpeg", "jpg", "png", "gif");
+    $bytes = 1024;
+    $KB = 1024;
+    $totalBytes = 5 * $bytes * $KB;
+    $config = parse_ini_file('../sql/db_config.ini');
+    $UploadFolder = $config['imageUploadPath'];
+
+    $counter = 0;
+
+
+    $temp = $_FILES["file"]["tmp_name"];
+    $name = $_FILES["file"]["name"];
+
+
+    $UploadOk = true;
+
+    if ($_FILES["file"]["size"] > $totalBytes) {
+        $UploadOk = false;
+        array_push($errors, $name . " file size is larger than 5 MB.");
+    }
+
+    $ext = pathinfo($name, PATHINFO_EXTENSION);
+    if (in_array($ext, $extension) == false) {
+        $UploadOk = false;
+        array_push($errors, $name . " is invalid file type.");
+    }
+
+    // if (file_exists($UploadFolder . "/" . $name) == true) {
+    //     $UploadOk = false;
+    //     array_push($errors, $name . " file is already exists.");
+    // }
+
+    if ($UploadOk == true || false) {
+        move_uploaded_file($temp, $UploadFolder . "/" . $name);
+        array_push($uploadedFiles, $name);
+    }
+
+
+    if ($counter > 0) {
+        if (count($errors) > 0) {
+            // echo "<b>Errors:</b>";
+            // echo "<br/><ul>";
+            // foreach ($errors as $error) {
+            //     echo "<li>" . $error . "</li>";
+            // }
+            // echo "</ul><br/>";
+            return $errors;
         }
 
-        return compact("uploadResult", "URL");
-    } else return $post;
+        if (count($uploadedFiles) > 0) {
+            echo "<b>Uploaded Files:</b>";
+            echo "<br/><ul>";
+            foreach ($uploadedFiles as $fileName) {
+                echo "<li>" . $fileName . "</li>";
+            }
+            echo "</ul><br/>";
+
+            return count($uploadedFiles) . " file(s) are successfully uploaded.";
+        }
+    } else {
+        return "Please, Select file(s) to upload.";
+    }
 }
-function setProducts()
+function setProduct()
 {
-    return $_POST;
+    require '../sql/connection.php';
+    $productId = db_quote(randomProductId());
+    $productPrice = db_quote($_POST['product_price']);
+    $productAvail = db_quote($_POST['product_avail']);
+    $productColor = db_quote($_POST['product_color']);
+    $productDesc = db_quote($_POST['product_desc']);
+    $productImages = db_quote(json_encode($_POST['product_images']));
+
+    $setProductQuery = "INSERT INTO `inventory` (`product_id`, `product_price`, `product_desc`, `product_avail`, `product_colors`, `product_image`) VALUES (".$productId." , ".$productPrice." , ".$productDesc." , ".$productAvail." , ".$productColor." , ".$productImages.")";
+    $ifProductSet = db_query($setProductQuery);
+    return $ifProductSet;
 }
 
 function randomProductId()

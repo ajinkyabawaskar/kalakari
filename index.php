@@ -38,7 +38,7 @@
                             <label for="product_desc">Product Description</label>
                             <input type="text" class="form-control" id="product_desc" name="product_desc" placeholder="Describe your product here" required>
                             <div class="invalid-feedback">
-                                Valid Product Description required. (Less than 25 characters)
+                                Valid Product Description required. (Upto 25 characters)
                             </div>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                                     Error.
                                 </div>
                                 <div class="invalid-feedback" id="file-info">
-                                    
+
                                 </div>
 
                             </div>
@@ -95,17 +95,22 @@
 
 
                         </div>
-                        <div class="col-md-4">
 
+                    </div>
+                    <hr class="my-4 mb-5">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Add Product to Inventory
+                            </button>
+                        </div>
+                        <div class="col-md-4 alert alert-success text-center" id="alert_success" role="alert">
+                            Product Added!
                         </div>
                     </div>
-
-                    <hr class="mb-5 mt-4">
-
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">Add Product to Inventory</button>
                 </form>
             </div>
         </div>
+
 
         <footer class="mb-5 pt-5 text-muted text-center text-small">
             <p class="mb-1">© Ajinkya Bawaskar</p>

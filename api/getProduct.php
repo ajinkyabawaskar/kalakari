@@ -30,6 +30,10 @@ function fetchProductBy($product_id)
         require '../sql/connection.php';
         $fetchProductQuery = "SELECT * FROM `inventory` WHERE `product_id` =".db_quote($product_id);
         $fetchedProduct = db_select($fetchProductQuery);
+        // selecting the first product
+        $fetchedProduct = $fetchedProduct[0];
+        $fetchedProduct['product_image'] = stripslashes($fetchedProduct['product_image']);
+        // $fetchedProduct['product_image'] = stripslashes($fetchedProduct['product_images']);
         // if fetchedProduct is empty, product is not found => returning appropriate message
         if($fetchedProduct == array()) {
             $fetchedProduct = "No Product Found";

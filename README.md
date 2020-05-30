@@ -23,9 +23,9 @@ Internship Assignment for Tiny Elephant Enterprises
 
 - PART B - Frontend Assignment
   - B.1 Input User Form : localhost/kalakari/ [here](https://myacademic.space/ "Input User Form")
-  - B.2 Full Page UI for Pop-Out Filter : localhost/kalakari/popout-filter [here](https://myacademic.space/popout-filter "Full Page UI for Pop-Out Filter")
+  - B.2 Full Page UI for Pop-Out Filter : *wip* localhost/kalakari/popout-filter [here](https://myacademic.space/popout-filter "Full Page UI for Pop-Out Filter") 
   - B.3 Image auto-play carousel : localhost/kalakari/carousel [here](https://myacademic.space/carousel "Image auto-play carousel")
-  - B.4 Menu header with motion effects : localhost/kalakari/header [here](https://myacademic.space/header "Menu header with motion effects")
+  - B.4 Menu header with motion effects : *wip* localhost/kalakari/header [here](https://myacademic.space/header "Menu header with motion effects")
 
 ## Deployed Application
 - This repository has been hosted, and can be accessed [here](https://myacademic.space "Kalakari Assignment")

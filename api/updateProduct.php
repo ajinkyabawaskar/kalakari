@@ -83,7 +83,15 @@ function updateProduct()
                 // update DB
                 $updateProductQuery = $updateProductQuery . implode(" , ", $updatedColumns) . $whereProductId;
                 $isProductUpdated = db_query($updateProductQuery);
-                return $isProductUpdated;
+                if($isProductUpdated) {
+                    return array(
+                        "productUpdated" => "success"
+                    );
+                } else {
+                    return array(
+                        "productUpdated" => "error"
+                    );
+                }
             }
         } else {
             // return occurred errors

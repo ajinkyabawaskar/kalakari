@@ -50,7 +50,7 @@ Upload.prototype.doUpload = function() {
             return myXhr;
         },
         success: function(data) {
-            if (data.uploadResult) {
+            if (data.type = "success") {
                 product_images.push(data.URL);
             }
         },
@@ -115,7 +115,6 @@ $(document).ready(function() {
                     $("#alert_error").text(data);
                     $("#alert_error").show();
                 }
-                console.log(data);
             },
             error: function(error) {
                 $("#alert_success").hide();
@@ -203,15 +202,7 @@ $("#product_image").on("change", function(e) {
     }
 });
 
-function removeFromArray(array, element) {
-    const index = array.indexOf(element);
-    array.splice(index, 1);
-}
-
-
 function removeUploaded(ele) {
-    console.log(JSON.stringify(product_images));
-
     list_item = ele.parentNode;
     theItem = list_item.childNodes;
     for (i = 0; i < product_images.length; i++) {

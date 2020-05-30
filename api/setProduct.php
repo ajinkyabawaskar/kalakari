@@ -3,7 +3,7 @@
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
         if (isset($_FILES['file']['name'])) {
-            $response_data = uploadFiles();
+            $response_data = uploadFiles2();
             response($response_data);
         } else {
             $response_data = setProduct();
@@ -21,27 +21,53 @@ function response($response_data)
     echo json_encode($response_data);
 }
 
-function uploadFiles()
+function uploadFiles2()
 {
-    $post = $_POST;
-    $errors = array();
-    $uploadedFiles = array();
-    $extension = array("jpeg", "jpg", "png", "gif");
-    $bytes = 1024;
-    $KB = 1024;
-    $totalBytes = 5 * $bytes * $KB;
-    $config = parse_ini_file('../sql/db_config.ini');
-    $uploaddir = $config['imageUploadPath'];
-
-    $uploadfile = $uploaddir . basename($_FILES['file']['name']);
-    if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
-        $uploadResult = true;
-        $URL = $config['imageDownloadPath'].basename($_FILES['file']['name']);
+    // Alloweing image fileformats
+    $allowed_image_extension = array(
+        "png",
+        "jpg",
+        "jpeg"
+    );
+    // Get image file extension
+    $file_extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+    // Validate file input to check if is not empty
+    if (!file_exists($_FILES["file"]["tmp_name"])) {
+        $response = array(
+            "type" => "error",
+            "message" => "Choose image file to upload."
+        );
+    }    // Validate file input to check if is with valid extension
+    else if (!in_array($file_extension, $allowed_image_extension)) {
+        $response = array(
+            "type" => "error",
+            "message" => "Upload valiid images. Only PNG and JPEG are allowed."
+        );
+    }    // Validate image file size
+    else if (($_FILES["file"]["size"] > 5000000)) {
+        $response = array(
+            "type" => "error",
+            "message" => "Image size exceeds 5MB"
+        );
     } else {
-        $uploadResult = false;
-        $URL = null;
+        $config = parse_ini_file('../sql/db_config.ini');
+        $uploaddir = $config['imageUploadPath'];
+
+        $target = $uploaddir . basename($_FILES["file"]["name"]);
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target)) {
+            $response = array(
+                "type" => "success",
+                "message" => "Image uploaded successfully.",
+                "URL" => $config['imageDownloadPath'] . basename($_FILES['file']['name'])
+            );
+        } else {
+            $response = array(
+                "type" => "error",
+                "message" => "Problem in uploading image files."
+            );
+        }
     }
-    return compact("uploadResult", "URL");
+    return $response;
 }
 
 function setProduct()
@@ -57,7 +83,7 @@ function setProduct()
     $dataError = array();
 
     // check product price
-    if ($productPrice < 100 && $productPrice > 10000) {
+    if ($productPrice < 100 || $productPrice > 10000) {
         array_push($dataError, "Incorrect input format: product_price");
     } else {
         $productPrice = db_quote($productPrice);
@@ -78,7 +104,7 @@ function setProduct()
     }
 
     // check product desc
-    if(strlen($productDesc)> 25 ) {
+    if (strlen($productDesc) > 25) {
         array_push($dataError, "Incorrect input format: product_desc");
     } else {
         $productDesc = db_quote($productDesc);

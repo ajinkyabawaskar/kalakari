@@ -17,16 +17,16 @@ Internship Assignment for Tiny Elephant Enterprises
 
 ### Available APIs
 - PART A - Backend Assignment
-  - READ : \[GET\] localhost/kalakari/api/getProduct.php?product_id=VALID_PRODUCT_ID
-  - WRITE : \[POST\] localhost/kalakari/api/setProduct.php
-  - UPDATE : \[POST\] localhost/kalakari/api/updateProduct.php
+  - READ : \[GET\] localhost/kalakari/api/getProduct.php?product_id=VALID_PRODUCT_ID or [here](https://myacademic.space/api/getProduct.php?product_id=VALID_PRODUCT_ID "Kalakari Assignment")
+  - WRITE : \[POST\] localhost/kalakari/api/setProduct.php or [here](https://myacademic.space/api/setProduct.php "Please use POST method")
+  - UPDATE : \[POST\] localhost/kalakari/api/updateProduct.php or [here](https://myacademic.space/api/updateProduct.php "Please use POST method")
 
 - PART B - Frontend Assignment
-  - B.1 Input User Form : localhost/kalakari/
-  - B.2 Full Page UI for Pop-Out Filter : localhost/kalakari/popout-filter
-  - B.3 Image auto-play carousel : localhost/kalakari/carousel
-  - B.4 Menu header with motion effects : localhost/kalakari/header
+  - B.1 Input User Form : localhost/kalakari/ [here](https://myacademic.space/ "Input User Form")
+  - B.2 Full Page UI for Pop-Out Filter : localhost/kalakari/popout-filter [here](https://myacademic.space/popout-filter "Full Page UI for Pop-Out Filter")
+  - B.3 Image auto-play carousel : localhost/kalakari/carousel [here](https://myacademic.space/carousel "Image auto-play carousel")
+  - B.4 Menu header with motion effects : localhost/kalakari/header [here](https://myacademic.space/header "Menu header with motion effects")
 
 ## Deployed Application
-- This repository has been hosted, and can be accessed [here](https://ajinkya.space/kalakari/ "Kalakari Assignment")
+- This repository has been hosted, and can be accessed [here](https://myacademic.space "Kalakari Assignment")
 

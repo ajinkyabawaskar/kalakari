@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Carousel</title>
+    <style>
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+        
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            font-size: 16px;
+            overflow: hidden;
+        }
+        
+        button {
+            background: none;
+            border: none;
+        }
+        /* Messages about browser width. */
+        
+        .warning-message,
+        .success-message {
+            display: none;
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            z-index: 100;
+            font-size: 16px;
+            color: white;
+        }
+        
+        .success-message {
+            display: block;
+            opacity: 0;
+            font-size: 36px;
+        }
+        
+        .success-message.is-in {
+            opacity: 0;
+            animation-name: fade-out;
+            animation-duration: 3s;
+        }
+        
+        @keyframes fade-out {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                display: none;
+                opacity: 0;
+            }
+        }
+        
+        @media (min-width: 1000px) {
+            .warning-message {
+                display: block;
+            }
+            .ios .warning-message {
+                display: none;
+            }
+        }
+        /* Stories */
+        
+        .stories-wrapper {
+            width: 100vw;
+            height: 100vh;
+            perspective: 400px;
+            overflow: hidden;
+        }
+        
+        .stories {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: translateZ(-50vw);
+        }
+        
+        .stories.is-closed {
+            transition: transform 0.25s ease-out, opacity 0.05s ease-out 0.20s;
+            opacity: 0;
+        }
+        /* Story (single) */
+        
+        .story {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
+        
+        .story__cover {
+            z-index: 20;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 1);
+        }
+        
+        .story__top {
+            z-index: 10;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+        }
+        
+        .story__details {
+            display: flex;
+            align-items: center;
+            margin: 16px 0 0 16px;
+        }
+        
+        .story__avatar {
+            width: 40px;
+            height: 40px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background-size: cover;
+        }
+        
+        .story__user {
+            margin-right: 8px;
+            color: white;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+        
+        .story__time {
+            color: white;
+            opacity: 0.5;
+            letter-spacing: 0.02em;
+        }
+        
+        .story__bottom {
+            z-index: 10;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Feature not implemented. */
+        
+        .story__send-button {
+            display: none;
+            padding: 16px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .story__video {
+            /* Make video to at least 100% wide and tall */
+            min-width: 100%;
+            min-height: 100%;
+            /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+            width: auto;
+            height: auto;
+            /* Center the video */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        /* For iOS, which does not allow inline video playing, we show a static image. */
+        
+        .story__image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        /* Feed */
+        
+        .feed {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feed__cover {
+            z-index: 20;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(255, 255, 255, 1);
+        }
+        
+        .feed__cover.is-hidden {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .feed__content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            margin-bottom: 60px;
+            font-size: 12px;
+            color: #9b9b9b;
+            text-align: center;
+        }
+        
+        .reload-icon {
+            display: block;
+            width: 30px;
+            margin-top: 10px;
+            stroke: red;
+        }
+        
+        .reload-icon path {
+            stroke: #bbb;
+        }
+        
+        .reload-icon polygon {
+            fill: #bbb;
+            stroke: #bbb;
+        }
+        
+        .header {
+            height: 48px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        /* Feed - Story Bar (row of circle avatars) */
+        
+        .story-bar {
+            display: flex;
+            height: 122px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            background-color: #f9f9f9;
+        }
+        
+        .story-bar__user {
+            display: inline-block;
+        }
+        
+        .story-bar__user.bounce {
+            animation-duration: .1s;
+            animation-fill-mode: forwards;
+            animation-delay: 0.18s;
+            animation-name: scale-down-bounce;
+            animation-timing-function: ease-in-out;
+        }
+        
+        @keyframes scale-down-bounce {
+            0% {
+                transform: scale(1)
+            }
+            50% {
+                transform: scale(0.8)
+            }
+            100% {
+                transform: scale(1))
+            }
+        }
+        
+        .story-bar__user-avatar {
+            width: 56px;
+            height: 56px;
+            margin: 0 8px 4px 8px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background-size: cover;
+            box-shadow: 0 0 1px 0 #999;
+        }
+        
+        .story-bar__user-name {
+            width: 64px;
+            margin: 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            font-size: 12px;
+            color: #9b9b9b;
+        }
+        
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            height: 48px;
+            width: 100%;
+            border-top: 1px solid #eee;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="stories-wrapper">
+        <div class="warning-message">This demo looks best at widths below 1000px. Try 400px.</div>
+        <div class="success-message">👍</div>
+        <section class="stories">
+        </section>
+    </div>
+
+    <div class="feed">
+        <div class="feed__cover"></div>
+        <div class="header"></div>
+        <div class="story-bar"></div>
+        <div class="feed__content">
+            <div>To view again.<br />Reload the page.</div>
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 61.25" version="1.1" x="0px" y="0px" class="reload-icon">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g transform="translate(-2335.000000, -172.000000)">
+                        <g transform="translate(2337.000000, 175.000000)">
+                            <path class="reload-icon-shape"
+                                d="M42.4025258,14.0548956 C39.3738552,5.85011558 31.4833658,0 22.2265086,0 C10.3523865,0 0.726508638,9.62587788 0.726508638,21.5 C0.726508638,33.3741221 10.3523865,43 22.2265086,43 L22.2265086,43 C31.7524181,43 39.8313782,36.8048728 42.6542051,28.223802"
+                                stroke="#000000" stroke-width="4" />
+                            <polygon fill="#000000"
+                                transform="translate(42.654205, 15.000000) scale(1, -1) rotate(-63.000000) translate(-42.654205, -15.000000) "
+                                points="37.6557116 23.2109081 37.6557116 6.79136002 48.3960608 15.0011341" />
+                        </g>
+                    </g>
+                </g>
+                <!-- Created by Kevin from the Noun Project -->
+            </svg>
+        </div>
+        <div class="tab-bar"></div>
+    </div>
+
+    <script type="text/template" id="story-template">
+        <article class="story" id="story-<%- index %>" data-story-id="<%- index %>">
+            <div class="story__cover"></div>
+            <div class="story__top">
+                <div class="story__details">
+                    <div class="story__avatar" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/9332/<%- user %>.jpg)"></div>
+                    <div class="story__user">
+                        <%- user %>
+                    </div>
+                    <div class="story__time">
+                        <%- time %>
+                    </div>
+                </div>
+            </div>
+            <div class="story__bottom">
+                <button class="story__send-button">Send Message</button>
+            </div>
+            <% if (isIOS) { %>
+                <div class="story__image" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/9332/<%- video %>.jpg)"></div>
+                <% } else { %>
+                    <video class="story__video" autoplay loop muted poster="https://s3-us-west-2.amazonaws.com/s.cdpn.io/9332/<%- video %>.jpg">
+                                <source src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/9332/<%- video %>.mp4" type="video/mp4">
+                            </video>
+                    <% } %>
+        </article>
+    </script>
+
+    <script type="text/template" id="story-bar-avatar-template">
+        <div class="story-bar__user" data-story-id="<%- index %>">
+            <div class="story-bar__user-avatar" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/9332/<%- user %>.jpg)"></div>
+            <div class="story-bar__user-name">
+                <%- user %>
+            </div>
+        </div>
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/9332/jquery.event.ue.js"></script>
+
+
+    <script>
+        'use strict';
+
+        var _createClass = function() {
+            function defineProperties(target, props) {
+                for (var i = 0; i < props.length; i++) {
+                    var descriptor = props[i];
+                    descriptor.enumerable = descriptor.enumerable || false;
+                    descriptor.configurable = true;
+                    if ("value" in descriptor) descriptor.writable = true;
+                    Object.defineProperty(target, descriptor.key, descriptor);
+                }
+            }
+            return function(Constructor, protoProps, staticProps) {
+                if (protoProps) defineProperties(Constructor.prototype, protoProps);
+                if (staticProps) defineProperties(Constructor, staticProps);
+                return Constructor;
+            };
+        }();
+
+        function _classCallCheck(instance, Constructor) {
+            if (!(instance instanceof Constructor)) {
+                throw new TypeError("Cannot call a class as a function");
+            }
+        }
+
+        // Instagram Stories Web Prototype
+        // by Lokesh Dhakar - twitter.com/lokesh
+        // -----------------------------------
+
+        // # To-Dos
+        // - [ ] Add ability to reopen after closing.
+        // - [ ] Start videos after they have been positioned?
+        // - [ ] Shrink videos before sharing? Crop videos?
+
+        // # Nice-to-haves
+        // - [ ] Play videos in canvas on mobile or use animated gifs. Canvas technique unlikely to be
+        //       performant on mobile devices.
+
+        // # Skipping
+        // - Implement slide up and down gestures and their respective actions
+        // - Have avatar image in story keep scale and animate towards avatar on feed page when closing.
+        // - Add loaders.
+
+
+        // Data
+        var storiesData = [{
+            user: 'lokesh',
+            time: '5min',
+            video: 'citylife'
+        }, {
+            user: 'vegangumshoe',
+            time: '12m',
+            video: 'girlbythesea'
+        }, {
+            user: 'thedogindie',
+            time: '3hr',
+            video: 'diving'
+        }, {
+            user: 'juanarreguin',
+            time: '5hr',
+            video: 'photoshop'
+        }, {
+            user: 'nspady',
+            time: '12hr',
+            video: 'statefair'
+        }];
+
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.platform);
+
+        // Templates
+        var storyBarAvatarTemplate = _.template($('#story-bar-avatar-template').html());
+        var storyTemplate = _.template($('#story-template').html());
+
+        // Elements
+        var $feedCover = $('.feed__cover');
+        var $storyBar = $('.story-bar');
+        var $storyBarUsers = $('.story-bar__user');
+
+        // Classes
+
+        var StoryBar = function() {
+            function StoryBar(el, data) {
+                _classCallCheck(this, StoryBar);
+
+                this.el = el;
+                this.$el = $(el);
+                this.data = data;
+            }
+
+            _createClass(StoryBar, [{
+                key: 'render',
+                value: function render() {
+                    var fragment = document.createDocumentFragment();
+
+                    _.each(this.data, function(story, index) {
+                        story = Object.assign(story, {
+                            'index': index
+                        });
+                        $(storyBarAvatarTemplate(story)).appendTo(fragment);
+                    });
+                    this.$el.append(fragment);
+                }
+            }]);
+
+            return StoryBar;
+        }();
+
+        var Stories = function() {
+            function Stories(el, data) {
+                _classCallCheck(this, Stories);
+
+                // The amount, as a percentage width of the story card, the user must drag it to have it
+                // slide to the next on release.
+                this.minDragPercentToTransition = 0.5;
+
+                // The number of pixels a MS horizontally the user is required to drag to set off this trigger.
+                this.minVelocityToTransition = 0.65;
+
+                // Bigger num creates a slower transition
+                this.transitionSpeed = 6;
+
+                // Init
+                this.rotateY = 0;
+
+                // Convenience properties
+                this.el = el;
+                this.$el = $(el);
+                this.stories = data;
+                this.count = this.stories.length;
+            }
+
+            _createClass(Stories, [{
+                key: 'render',
+                value: function render() {
+                    var fragment = document.createDocumentFragment();
+
+                    _.each(this.stories, function(story, index) {
+                        story = Object.assign(story, {
+                            'index': index,
+                            'isIOS': isIOS
+                        });
+
+                        $(storyTemplate(story)).appendTo(fragment);
+                    });
+
+                    this.$el.append(fragment);
+
+                    // Document level event handling
+                    this._addEventHandlers();
+                }
+
+                /*
+                  	Make story and its neighbors visible, hide the rest.
+                   */
+
+            }, {
+                key: 'show',
+                value: function show(index) {
+                    // Update index which tracks currently shown story
+                    this.index = index;
+
+                    // Reset Stories transforms (container)
+                    this.$el.css('transform', 'translateZ(-50vw)');
+                    this.rotateY = 0;
+
+                    // Hide all stories
+                    this.$el.find('.story').hide();
+
+                    // Show and position the chosen story as well as its neighbors
+                    for (var i = -1; i < 2; i++) {
+                        var loopIndex = i + index;
+                        var coverOpacity = Math.abs(i);
+
+                        this.$el.find('#story-' + loopIndex).find('.story__cover').css({
+                            'will-change': 'opacity',
+                            'opacity': coverOpacity
+                        }).end().css({
+                            'will-change': 'transform',
+                            'transform': 'rotateY(' + i * 90 + 'deg) translateZ(50vw)'
+                        }).show();
+                    }
+                }
+            }, {
+                key: 'open',
+                value: function open() {
+                    console.log('open');
+                }
+            }, {
+                key: 'close',
+                value: function close() {
+                    var $story = this.$el.find('#story-' + this.index);
+
+                    this._removeEventHandlers();
+                    this.pauseVideos();
+
+                    // Hide all stories but the current
+                    this.$el.find('.story').hide();
+                    $story.show();
+
+                    //
+                    var $storyBarUser = $storyBar.find('[data-story-id=' + this.index + ']');
+                    var storyBarUserRect = $storyBarUser[0].getBoundingClientRect();
+
+                    // Reset 3d transforms and scale down.
+                    $story.attr('style', '');
+                    this.$el.attr('style', 'transform-origin: ' + (storyBarUserRect.left + 12) + 'px ' + (storyBarUserRect.top + 24) + 'px; transform: translateZ(0) scale(0.1)');
+                    this.$el.addClass('is-closed');
+                    $storyBarUser.addClass('bounce');
+
+                    // Fade in feed page
+                    $feedCover.attr('style', '').addClass('is-hidden');
+                }
+            }, {
+                key: 'pauseVideos',
+                value: function pauseVideos() {
+                    this.$el.find('.story__video').each(function() {
+                        this.pause();
+                    });
+                }
+            }, {
+                key: '_addEventHandlers',
+                value: function _addEventHandlers() {
+                    $(document).on('utap.stories', this._onTap.bind(this)).on('udragstart.stories', this._onDragStart.bind(this)).on('udragmove.stories', this._onDragMove.bind(this)).on('udragend.stories', this._onDragEnd.bind(this));
+                }
+            }, {
+                key: '_removeEventHandlers',
+                value: function _removeEventHandlers() {
+                    $(document).off('.stories');
+                }
+            }, {
+                key: '_onTap',
+                value: function _onTap(e) {
+                    if (this.isRotating) {
+                        return;
+                    }
+                    this.isRotating = true;
+
+                    // // Clicking the left 33% of the image takes you back, the rest forwards.
+                    if (e.px_start_x < window.innerWidth / 3) {
+                        // If going back from first card, close
+                        if (this.index === 0) {
+                            this.isOpeningOrClosing = true;
+                            this.close();
+                        } else {
+                            this.targetRotateY = 90;
+                            this.targetDirection = 'back';
+                        }
+                    } else {
+                        if (this.index + 1 === this.count) {
+                            this.isOpeningOrClosing = true;
+                            this.close();
+                        } else {
+                            this.targetRotateY = -90;
+                            this.targetDirection = 'forward';
+                        }
+                    }
+
+                    this.update();
+                }
+            }, {
+                key: '_onDragStart',
+                value: function _onDragStart(e) {
+                    this.targetDirection = null;
+                    this.isDragging = true;
+                    this.el.style.willChange = 'transform';
+
+                    this.dragStartX = e.px_start_x;
+                    this.dragCurrentX = this.dragStartX;
+
+                    this.update();
+                }
+            }, {
+                key: '_onDragMove',
+                value: function _onDragMove(e) {
+                    this.dragCurrentX = e.px_current_x;
+                }
+            }, {
+                key: '_onDragEnd',
+                value: function _onDragEnd(e) {
+                    this.isDragging = false;
+
+                    // Did the user show intent to go to a different card? We check in two ways:
+                    // 1. Has the card been dragged far to one side?
+                    // 2. Did the drag velocity imply movement to one side?
+
+                    // Note: We use an adjusted viewport width to calculate the drag to side threshold. As the
+                    // viewport gets larger than 320px, we shrink the viewport value used in the calcuation.
+                    // This prevents scenarios such as when the minDragPercent is 0.5 and actual viewport width
+                    // is 2048px, requiring the user to drag over 1024px to trigger the card change.
+
+                    // 1.
+                    var dragDeltaX = -e.px_tdelta_x;
+                    var adjustedViewportWidth = (window.innerWidth - 320) / 4 + 320;
+                    var threshold = adjustedViewportWidth * this.minDragPercentToTransition;
+
+                    // 2.
+                    var velocity = e.px_tdelta_x / e.ms_elapsed;
+
+                    if (dragDeltaX > threshold || velocity < -1 * this.minVelocityToTransition) {
+                        // If going back from first card, close
+                        if (this.index === 0) {
+                            this.isOpeningOrClosing = true;
+                            this.close();
+                        } else {
+                            this.targetRotateY = 90;
+                            this.targetDirection = 'back';
+                            this.isRotating = true;
+                        }
+                    } else if (Math.abs(dragDeltaX) > threshold || velocity > this.minVelocityToTransition) {
+                        if (this.index + 1 === this.count) {
+                            this.isOpeningOrClosing = true;
+                            this.close();
+                        } else {
+                            this.targetRotateY = -90;
+                            this.targetDirection = 'forward';
+                            this.isRotating = true;
+                        }
+                    } else {
+                        this.targetRotateY = 0;
+                        this.isRotating = true;
+                    }
+                }
+            }, {
+                key: 'update',
+                value: function update() {
+                    // Update calls itself at the end and loop. We break the loop once dragging and animations
+                    // are both complete or we are opening/closing.
+                    if (this.isOpeningOrClosing || !this.isDragging && !this.isRotating) {
+                        return;
+                    }
+
+                    var setCSSAfterUpdating = this.isDragging || this.isRotating;
+
+                    if (this.isDragging) {
+                        var dragDeltaX = this.dragCurrentX - this.dragStartX;
+
+                        // If on first card and dragging back OR
+                        // If on last card and draggin forward, add resistance.
+                        if (this.index === 0 && dragDeltaX > 0 || this.index + 1 === this.count && dragDeltaX < 0) {
+                            this.rotateY = dragDeltaX / window.innerWidth * 30;
+                            var opacity = (90 - Math.abs(this.rotateY)) / 90;
+                            $feedCover.css('opacity', opacity);
+                        } else {
+                            this.rotateY = dragDeltaX / window.innerWidth * 90;
+                        }
+                    }
+
+                    if (this.isRotating) {
+                        // Simple easing
+                        this.rotateY += (this.targetRotateY - this.rotateY) / this.transitionSpeed;
+
+                        // If story has nearly reached its target, bump it to final spot and stop animating.
+                        if (Math.abs(this.rotateY - this.targetRotateY) < 0.5) {
+                            this.rotateY = this.targetRotateY;
+                            this.el.style.willChange = 'initial';
+                            this.isRotating = false;
+
+                            if (this.targetDirection) {
+                                this.isSwitchingStories = true;
+                            }
+                        }
+                    }
+
+                    if (setCSSAfterUpdating) {
+                        this.$el.css('transform', 'translateZ(-50vw) rotateY(' + this.rotateY + 'deg)');
+
+                        // Freater rotateY, more opacity for prev.
+                        // Smaller rotate, more opacity for next.
+                        var _opacity = (90 - Math.abs(this.rotateY)) / 90;
+                        var prevIndex = this.index - 1;
+                        var nextIndex = this.index + 1;
+
+                        this.$el.find('#story-' + prevIndex + ' .story__cover').add('#story-' + nextIndex + ' .story__cover').css('opacity', _opacity);
+                    }
+
+                    if (this.isSwitchingStories) {
+                        var newIndex = this.targetDirection === 'forward' ? this.index + 1 : this.index - 1;
+                        this.show(newIndex);
+                        this.isSwitchingStories = false;
+                    }
+                    requestAnimationFrame(this.update.bind(this));
+                }
+            }, {
+                key: 'destroy',
+                value: function destroy() {
+                    this._removeEventHandlers();
+                    this.el.remove();
+                    delete this;
+                }
+            }]);
+
+            return Stories;
+        }();
+
+        // ------------
+        // Init
+        // ------------
+
+        // Prevent bouncy iOS scrolling in mobile safari
+        // document.body.addEventListener('touchmove', (event) => {
+        // 	event.preventDefault();
+        // }, false);
+
+        var thumbsUpShown = false;
+        if (window.innerWidth >= 1000) {
+            $(window).on('resize.stories', function() {
+                if (window.innerWidth <= 420) {
+                    $('.success-message').addClass('is-in');
+                    $(window).off('resize.stories');
+                }
+            });
+        }
+
+        var storyBar = new StoryBar(document.querySelector('.story-bar'), storiesData);
+        storyBar.render();
+
+        var stories = new Stories(document.querySelector('.stories'), storiesData);
+        stories.render();
+        stories.show(0);
+
+        if (isIOS) {
+            $('body').addClass('ios');
+        }
+    </script>
+</body>
+
+</html>
